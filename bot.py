@@ -65,9 +65,6 @@ Bot = Client(
 
 @Bot.on_message(filters.private)
 async def _(bot: Client, cmd: Message):
-    if int(cmd.from_user.id)==int(Config.BOT_OWNER):
-        if not await db.check_bot_setting_exist():
-            await db.add_bot_db()
     await handle_user_status(bot, cmd)
 
 
