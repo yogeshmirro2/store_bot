@@ -10,3 +10,4 @@ aiohttp
 enums
 psutil
 gunicorn
+flask
