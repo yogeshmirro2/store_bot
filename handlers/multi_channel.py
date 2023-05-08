@@ -16,7 +16,6 @@ async def get_working_db_channel_id():
 async def get_working_channel_string():
     working_id = str(await db.get_current_db_channel_id())
     channel_dict = await db_channel_dict()
-    print(channel_dict)
     for i in channel_dict:
         if channel_dict[i]==working_id:
             return i
