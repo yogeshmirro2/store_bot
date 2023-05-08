@@ -6,17 +6,17 @@ import os
 class Config(object):
     API_ID = int(os.environ.get("API_ID",18860540))
     API_HASH = os.environ.get("API_HASH","22dd2ad1706199438ab3474e85c9afab")
-    BOT_TOKEN = os.environ.get("BOT_TOKEN","6252647993:AAFVnqF_YcyPCksB2gUBL0K4BFek71HvxlY")
+    BOT_TOKEN = os.environ.get("BOT_TOKEN","")
     BOT_USERNAME = os.environ.get("BOT_USERNAME","DC4_01Robot")
     DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "./downloads")
-    DB_CHANNELS = list(int(x) for x in os.environ.get("DB_CHANNELS","-1001949245822").split())# multiple channel id must be separated by space
-    LOG_CHANNEL = os.environ.get("LOG_CHANNEL","-1001949245822")
+    DB_CHANNELS = list(int(x) for x in os.environ.get("DB_CHANNELS","-100").split())# multiple channel id must be separated by space
+    LOG_CHANNEL = os.environ.get("LOG_CHANNEL","")
     UPDATES_CHANNEL = os.environ.get("UPDATES_CHANNEL",None)
-    BOT_OWNER = int(os.environ.get("BOT_OWNER","5360919559"))
+    BOT_OWNER = int(os.environ.get("BOT_OWNER",""))
     BOT_ADMINS = list(int(x) for x in os.environ.get("BOT_ADMINS","12 34").split())
     BOT_ADMINS.append(BOT_OWNER)
     OTHER_USERS_CAN_SAVE_FILE = os.environ.get("OTHER_USERS_CAN_SAVE_FILE",False)
-    DATABASE_URL = os.environ.get("DATABASE_URL","mongodb+srv://ankur560s:ankur560@cluster00.nlwm8ya.mongodb.net/?retryWrites=true&w=majority")
+    DATABASE_URL = os.environ.get("DATABASE_URL","")
     BANNED_USERS = set(int(x) for x in os.environ.get("BANNED_USERS", "1234567890").split())
     FORWARD_AS_COPY = os.environ.get("FORWARD_AS_COPY", True)
     BROADCAST_AS_COPY = os.environ.get("BROADCAST_AS_COPY", False)
