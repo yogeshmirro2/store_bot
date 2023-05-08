@@ -97,7 +97,7 @@ class Database:
 
 
     async def delete_update_channel_id(self):
-        check = await check_update_channel_id()
+        check = await db.check_update_channel_id()
         if check is not None:
             await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'UPDATES_CHANNEL': None}})
             return True
@@ -114,7 +114,7 @@ class Database:
         return status
 
     async def delete_log_channel_id(self):
-        checking = await check_log_channel_id()
+        checking = await db.check_log_channel_id()
         if checking is not None:
             await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'LOG_CHANNEL': None}})
             return True
@@ -273,7 +273,7 @@ class Database:
     async def get_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
         key = user.get("verify_key")
-        if await check_verify_exist():
+        if await db.check_verify_list_exist():
             verify_key_list,verify_link_list = await get_verify_key_link_list()
             if key not in verify_key_list:
                 await update_verify_key(id)
@@ -282,7 +282,7 @@ class Database:
 
     async def update_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
-        if await check_verify_exist():
+        if await db.check_verify_list_exist():
             verify_key_list,verify_link_list = await get_verify_key_link_list()
             key = secrets.choice(verify_key_list)
             await self.col.update_one({'id': id}, {'$set': {'verify_key': key}})
