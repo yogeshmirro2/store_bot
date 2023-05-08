@@ -12,7 +12,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.users
-        self.fcol = self.db.database_channel
+        self.fcol = self.db.database_channel[{"56":"78"}]
     def new_user(self, id):
         return dict(
             id=id,
