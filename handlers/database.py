@@ -6,7 +6,28 @@ import motor.motor_asyncio
 from configs import Config
 import datetime
 
-bot_db_dict=dict(
+class Database:
+
+    def __init__(self, uri, database_name):
+        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
+        self.db = self._client[database_name]
+        self.col = self.db.users
+        self.fcol = self.db.database_channel
+    def new_user(self, id):
+        return dict(
+            id=id,
+            join_date=datetime.date.today().isoformat(),
+            verify_key=secrets.choice(Config.VERIFY_KEY) if Config.VERIFY_KEY else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
+            verify_date=str(datetime.datetime.today()-datetime.timedelta(days=int(Config.VERIFY_DAYS))) if Config.VERIFY_DAYS else str(datetime.datetime.today()-datetime.timedelta(days=2)),
+            ban_status=dict(
+                is_banned=False,
+                ban_duration=0,
+                banned_on=datetime.date.max.isoformat(),
+                ban_reason=''
+            )
+        )
+    async def add_bot_db(self):
+        bot_db_dict=dict(
             BOT_DB = "BOT_SETTINGS",
             CURRENT_DB_CHANNEL=int(Config.DB_CHANNELS[0]),
             TOTAL_DB_CHANNEL_LIST = Config.DB_CHANNELS,
@@ -27,29 +48,7 @@ bot_db_dict=dict(
             HOW_TO_VERIFY = Config.HOW_TO_VERIFY,
             OTHER_USERS_CAN_SAVE_FILE = Config.OTHER_USERS_CAN_SAVE_FILE
         )
-
-
-
-class Database:
-
-    def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        self.db = self._client[database_name]
-        self.col = self.db.users
-        self.fcol = self.db.database_channel.insert_one(bot_db_dict)
-    def new_user(self, id):
-        return dict(
-            id=id,
-            join_date=datetime.date.today().isoformat(),
-            verify_key=secrets.choice(Config.VERIFY_KEY) if Config.VERIFY_KEY else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
-            verify_date=str(datetime.datetime.today()-datetime.timedelta(days=int(Config.VERIFY_DAYS))) if Config.VERIFY_DAYS else str(datetime.datetime.today()-datetime.timedelta(days=2)),
-            ban_status=dict(
-                is_banned=False,
-                ban_duration=0,
-                banned_on=datetime.date.max.isoformat(),
-                ban_reason=''
-            )
-        )
+        await self.fcol.insert_one(bot_db_dict)
 
     async def get_total_db_channel_list(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
@@ -61,6 +60,12 @@ class Database:
         channels_list = bot_dict.get("TOTAL_DB_CHANNEL_LIST")
         channels_list.append(int(channel_id))
         await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'TOTAL_DB_CHANNEL_LIST': channels_list}})
+
+
+    async def check_bot_setting_exist(self):
+        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
+        return True if bot_dict else False
+
 
     async def get_current_db_channel_id(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
@@ -98,7 +103,7 @@ class Database:
             return True
         else:
             return False
-    
+
 
     async def change_log_channel_id(self,channel_id):
         await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'LOG_CHANNEL': channel_id}})
@@ -247,12 +252,7 @@ class Database:
     async def delete_how_to_verify(self):
         await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'HOW_TO_VERIFY': ""}})
 
-
-
-    async def check_bot_setting_exist(self):
-        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
-        return True if bot_dict else False
-
+    
     async def get_verify_date(self,id):
         user = await self.col.find_one({'id': int(id)})
         datetime_formate = user.get("verify_date")
@@ -273,7 +273,7 @@ class Database:
     async def get_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
         key = user.get("verify_key")
-        if await check_verify_list_exist():
+        if await check_verify_exist():
             verify_key_list,verify_link_list = await get_verify_key_link_list()
             if key not in verify_key_list:
                 await update_verify_key(id)
@@ -282,7 +282,7 @@ class Database:
 
     async def update_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
-        if await check_verify_list_exist():
+        if await check_verify_exist():
             verify_key_list,verify_link_list = await get_verify_key_link_list()
             key = secrets.choice(verify_key_list)
             await self.col.update_one({'id': id}, {'$set': {'verify_key': key}})
