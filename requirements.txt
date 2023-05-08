@@ -7,7 +7,6 @@ psutil
 requests
 pymongo
 aiohttp
-enums
 psutil
 gunicorn
 flask
