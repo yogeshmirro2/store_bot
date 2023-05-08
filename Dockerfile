@@ -3,4 +3,4 @@ WORKDIR .
 RUN apt -qq update && apt -qq install -y git wget python3-dev
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
-CMD ["python", "start.sh"]
+CMD ["bash", "start.sh"]
