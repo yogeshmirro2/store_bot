@@ -6,6 +6,7 @@ dnspython
 psutil
 requests
 pymongo
-enums
 aiohttp
+enums
 psutil
+gunicorn
