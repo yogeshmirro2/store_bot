@@ -10,7 +10,7 @@ class Config(object):
     BOT_USERNAME = os.environ.get("BOT_USERNAME","DC4_01Robot")
     DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "./downloads")
     DB_CHANNELS = list(int(x) for x in os.environ.get("DB_CHANNELS","-100").split())# multiple channel id must be separated by space
-    LOG_CHANNEL = os.environ.get("LOG_CHANNEL","")
+    LOG_CHANNEL = os.environ.get("LOG_CHANNEL",None)
     UPDATES_CHANNEL = os.environ.get("UPDATES_CHANNEL",None)
     BOT_OWNER = int(os.environ.get("BOT_OWNER",""))
     BOT_ADMINS = list(int(x) for x in os.environ.get("BOT_ADMINS","12 34").split())
