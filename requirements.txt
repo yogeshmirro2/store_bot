@@ -1,0 +1,7 @@
+Pyrogram==2.0
+TgCrypto
+motor
+aiofiles
+dnspython
+psutil
+aiohttp
