@@ -6,28 +6,7 @@ import motor.motor_asyncio
 from configs import Config
 import datetime
 
-class Database:
-
-    def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        self.db = self._client[database_name]
-        self.col = self.db.users
-        self.fcol = self.db.database_channel
-    def new_user(self, id):
-        return dict(
-            id=id,
-            join_date=datetime.date.today().isoformat(),
-            verify_key=secrets.choice(Config.VERIFY_KEY) if Config.VERIFY_KEY else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
-            verify_date=str(datetime.datetime.today()-datetime.timedelta(days=int(Config.VERIFY_DAYS))) if Config.VERIFY_DAYS else str(datetime.datetime.today()-datetime.timedelta(days=2)),
-            ban_status=dict(
-                is_banned=False,
-                ban_duration=0,
-                banned_on=datetime.date.max.isoformat(),
-                ban_reason=''
-            )
-        )
-    async def add_bot_db(self):
-        bot_db_dict=dict(
+bot_db_dict=dict(
             BOT_DB = "BOT_SETTINGS",
             CURRENT_DB_CHANNEL=int(Config.DB_CHANNELS[0]),
             TOTAL_DB_CHANNEL_LIST = Config.DB_CHANNELS,
@@ -48,7 +27,29 @@ class Database:
             HOW_TO_VERIFY = Config.HOW_TO_VERIFY,
             OTHER_USERS_CAN_SAVE_FILE = Config.OTHER_USERS_CAN_SAVE_FILE
         )
-        await self.fcol.insert_one(bot_db_dict)
+
+
+
+class Database:
+
+    def __init__(self, uri, database_name):
+        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
+        self.db = self._client[database_name]
+        self.col = self.db.users
+        self.fcol = self.db.database_channel.insert_one(bot_db_dict)
+    def new_user(self, id):
+        return dict(
+            id=id,
+            join_date=datetime.date.today().isoformat(),
+            verify_key=secrets.choice(Config.VERIFY_KEY) if Config.VERIFY_KEY else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
+            verify_date=str(datetime.datetime.today()-datetime.timedelta(days=int(Config.VERIFY_DAYS))) if Config.VERIFY_DAYS else str(datetime.datetime.today()-datetime.timedelta(days=2)),
+            ban_status=dict(
+                is_banned=False,
+                ban_duration=0,
+                banned_on=datetime.date.max.isoformat(),
+                ban_reason=''
+            )
+        )
 
     async def get_total_db_channel_list(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
