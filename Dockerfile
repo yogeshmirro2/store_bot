@@ -18,10 +18,10 @@ RUN set -ex; \
     && apt-get install -y --no-install-recommends \
         busybox \
 	git \
-	python3 \
-	python3-dev \
-	python3-pip \
-	python3-lxml \
+	python \
+	python-dev \
+	python-pip \
+	python-lxml \
 	pv \
 	&& apt-get autoclean \
         && apt-get autoremove \
