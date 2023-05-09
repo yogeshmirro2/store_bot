@@ -101,6 +101,7 @@ async def start(bot: Client, cmd: Message):
         key = cmd.text.split("_",1)[-1]
         check = (cmd.text.split("_",1)[0]).split()[-1]
         edits = await cmd.reply_text("**Please Wait...Checking Command Given by You**")
+        
         try:
             if check == "verify":
                 try:
@@ -122,8 +123,9 @@ async def start(bot: Client, cmd: Message):
                             usr_key = await db.get_verify_key()
                             if await db.use_pre_shorted_link_status() and await db.check_verify_list_exist():
                                 verify_key_list,verify_link_list = await db.get_verify_key_link_list()
+                                how_verify = await db.get_how_to_verify()
                                 usr_link = verify_link_list[verify_key_list.index(usr_key)]
-                                await edits.edit(f"**your new verification link is👇👇👇👇\n{usr_link}\nOnce you verify , your verification valid till next {day} days")
+                                await edits.edit(f"**your new verification link is👇👇👇👇\n{usr_link}\nOnce you verify , your verification valid till next {day} days\n\n{how_verify}")
                                 return
                             elif not await db.use_pre_shorted_link_status() and await db.check_verify_list_exist():
                                 await edits.edit("**use_pre_shorted_link not enable.\nplease report bot owner🙏🙏🙏**")
@@ -135,7 +137,8 @@ async def start(bot: Client, cmd: Message):
                                 usr_link_short = f"https://t.me/{Config.BOT_USERNAME}?start=verify_{usr_key}"
                                 shorted_link = await get_shortlink(usr_link_short)
                                 if shorted_link:
-                                    await edits.edit(f"**your new verification link is👇👇👇👇\n{shorted_link}\nOnce you verify , your verification valid till next {day} days")
+                                    how_verify = await db.get_how_to_verify()
+                                    await edits.edit(f"**your new verification link is👇👇👇👇\n{shorted_link}\nOnce you verify , your verification valid till next {day} days\n\n{how_verify}")
                                     return
                                 else:
                                     await edits.edit("**there are no shortner availible.\nplease report bot owner🙏🙏🙏")
@@ -165,9 +168,10 @@ async def start(bot: Client, cmd: Message):
                                 await edits.edit("**your verification has expired.\nplease do verification again.\nplease wait... till next verification link will be generate....")
                                 user_key = await db.get_verify_key(cmd.from_user.id)
                                 if await db.use_pre_shorted_link_status() and await db.check_verify_list_exist():
+                                    how_verify = await db.get_how_to_verify()
                                     verify_key_list,verify_link_list = await db.get_verify_key_link_list()
                                     usr_link = verify_link_list[verify_key_list.index(user_key)]
-                                    await edits.edit(f"**your verification link is👇👇👇👇\n{usr_link}\nOnce you verify , your verification valid till next {day} days")
+                                    await edits.edit(f"**your verification link is👇👇👇👇\n{usr_link}\nOnce you verify , your verification valid till next {day} days\n\n{how_verify}")
                                     return
                                 elif not await db.check_verify_list_exist() and await db.use_pre_shorted_link_status():
                                     await edits.edit("**Error fetching your verification link becoz there are no verify key or verify link exist.\n please report bot owner🙏🙏🙏**")
@@ -176,7 +180,8 @@ async def start(bot: Client, cmd: Message):
                                     usr_link_short = f"https://t.me/{Config.BOT_USERNAME}?start=verify_{user_key}"
                                     shorted_link = await get_shortlink(usr_link_short)
                                     if shorted_link:
-                                        await edits.edit(f"**your new verification link is👇👇👇👇\n{shorted_link}\nOnce you verify , your verification valid till next {day} days")
+                                        how_verify = await db.get_how_to_verify()
+                                        await edits.edit(f"**your new verification link is👇👇👇👇\n{shorted_link}\nOnce you verify , your verification valid till next {day} days\n\n{how_verify}")
                                         return
                                     else:
                                         await edits.edit("**Error fetching your verification link becoz there are no shortner availible.\nplease report bot owner🙏🙏🙏")
