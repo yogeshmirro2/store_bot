@@ -121,7 +121,7 @@ async def start(bot: Client, cmd: Message):
                             await db.update_verify_key(cmd.from_user.id)
                             usr_key = await db.get_verify_key()
                             if await db.use_pre_shorted_link_status() and await db.check_verify_list_exist():
-                                verify_key_list,verify_link_list = await get_verify_key_link_list()
+                                verify_key_list,verify_link_list = await db.get_verify_key_link_list()
                                 usr_link = verify_link_list[verify_key_list.index(usr_key)]
                                 await edits.edit(f"**your new verification link is👇👇👇👇\n{usr_link}\nOnce you verify , your verification valid till next {day} days")
                                 return
