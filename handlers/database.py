@@ -168,7 +168,7 @@ class Database:
 
     async def use_pre_shorted_link_status(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
-        status = bot_dict.get(USE_PRESHORTED_LINK)
+        status = bot_dict.get('USE_PRESHORTED_LINK')
         return status
 
     async def change_verify_key_link(self,verify_key_string,verify_link_string):
