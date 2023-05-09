@@ -270,16 +270,6 @@ class Database:
         return True if len(verify_key_list) & len(verify_link_list)!=0 else False
 
 
-    async def get_verify_key(self,id):
-        user = await self.col.find_one({'id': int(id)})
-        key = user.get("verify_key")
-        if await db.check_verify_list_exist():
-            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
-            if key not in verify_key_list:
-                await db.update_verify_key(id)
-                key = user.get("verify_key")
-        return key
-
     async def update_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
         if await db.check_verify_list_exist():
@@ -290,6 +280,19 @@ class Database:
             key = ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7))
             await self.col.update_one({'id': id}, {'$set': {'verify_key': key}})
 
+
+
+    async def get_verify_key(self,id):
+        user = await self.col.find_one({'id': int(id)})
+        key = user.get("verify_key")
+        if await db.check_verify_list_exist():
+            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
+            if key not in verify_key_list:
+                await db.update_verify_key(id)
+                key = user.get("verify_key")
+        return key
+
+    
     async def add_user(self, id):
         user = self.new_user(id)
         await self.col.insert_one(user)
