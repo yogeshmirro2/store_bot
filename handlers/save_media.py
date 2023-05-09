@@ -55,7 +55,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions+=f"**{i}👉 {sent_message.caption}**\n" if sent_message.caption else f"**{i}**\n"
+                media_captions+=f"**{i}👉 {sent_message.caption}**\n\n" if sent_message.caption else f"**{i}**\n"
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
@@ -92,15 +92,20 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
         )
         
         if media_thumb_id and photo_send_channel is not None:
-            await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-            #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
-            thumb_path = await bot.download_media(media_thumb_id)
-            add_detail = await db.get_add_detail()
-            media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}" 
-            await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
-            await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
-            await rm_dir()
-            await asyncio.sleep(2)
+            try:
+                await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
+                #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
+                thumb_path = await bot.download_media(media_thumb_id)
+                add_detail = await db.get_add_detail()
+                media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}" 
+                await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
+                await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
+                await rm_dir()
+                await asyncio.sleep(2)
+            except Exception as e:
+                await editable.edit(f"{e}")
+                await asyncio.sleep(4)
+        
         await editable.edit(
             f"**Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
             reply_markup=InlineKeyboardMarkup(
