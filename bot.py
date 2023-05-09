@@ -499,7 +499,7 @@ async def add_log_channel(c :Client, m: Message):
         await db.change_log_channel_id(int(channel_id))
         await m.reply_text("**Successfully added as LOG_CHANNEL**")
     except ValueError:
-        await message.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
+        await m.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
     except Exception as e:
         await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
@@ -613,7 +613,7 @@ async def change_verify_key_link_list(c :Client, m: Message):
         return await m.reply_text(f"**reply any text which contain verify key and verify link.\nmultiple verify key and verify link separated by space and verify key and verify link must separated by colon(|)\nexample---- key1 key2 key3 key4|link1 link2 link3 link4\nYour current verify key and verify list  is ----\nVerify_Key --- {list1}\nVerify_Link --- {list2} **")
         
     try:
-        key_string,link_string= m.reply_to_message.text.split("|")[0],message.reply_to_message.text.split("|")[1]
+        key_string,link_string= m.reply_to_message.text.split("|")[0],m.reply_to_message.text.split("|")[1]
         await db.change_verify_key_link(key_string,link_string)
         await m.reply_text("**Successfully change verify_key_list and verify_link_list**")
     except Exception as e:
@@ -639,7 +639,7 @@ async def change_shortner_api_link(c :Client, m: Message):
         return await m.reply_text(f"**reply any text which contain shortner_api and shortner_api_link.\nshortner_api and shortner_api_link must be separated by colon(|)\nexample---- shortner_api|shortner_api_link\n Your current shortner_api and shortner_api_link  is ----\nShortner_Api --- {api}\nShortner_Api_Link --- {link} **")
         
     try:
-        api_string,link_string= m.reply_to_message.text.split("|")[0],message.reply_to_message.text.split("|")[1]
+        api_string,link_string= m.reply_to_message.text.split("|")[0],m.reply_to_message.text.split("|")[1]
         await db.change_shortner_api_link(api_string,link_string)
         await m.reply_text("**Successfully change shortner_api and shortner_api_link**")
     except Exception as e:
@@ -649,7 +649,7 @@ async def change_shortner_api_link(c :Client, m: Message):
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_shortner_api_link"))
 async def delete_shortner_api_link(c :Client, m: Message):
     if not m.from_user:
-        return await message.reply_text("I don't know about you sar :(")
+        return await m.reply_text("I don't know about you sar :(")
     try:
         await db.delete_shortner_api_link()
         await m.reply_text("**Successfully deleted shortner_api and shortner_api_link**")
@@ -704,7 +704,7 @@ async def change_add_details(c :Client, m: Message):
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_add_details"))
 async def delete_add_details(c :Client, m: Message):
     if not m.from_user:
-        return await message.reply_text("I don't know about you sar :(")
+        return await m.reply_text("I don't know about you sar :(")
     try:
         await db.delete_add_details()
         await m.reply_text("**Successfully deleted add_detail data**")
