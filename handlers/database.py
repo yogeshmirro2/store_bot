@@ -274,7 +274,7 @@ class Database:
         user = await self.col.find_one({'id': int(id)})
         key = user.get("verify_key")
         if await db.check_verify_list_exist():
-            verify_key_list,verify_link_list = await get_verify_key_link_list()
+            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
             if key not in verify_key_list:
                 await update_verify_key(id)
                 key = user.get("verify_key")
@@ -283,7 +283,7 @@ class Database:
     async def update_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
         if await db.check_verify_list_exist():
-            verify_key_list,verify_link_list = await get_verify_key_link_list()
+            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
             key = secrets.choice(verify_key_list)
             await self.col.update_one({'id': id}, {'$set': {'verify_key': key}})
         else:
