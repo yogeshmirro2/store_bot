@@ -10,9 +10,9 @@ from binascii import (
 )
 from pyrogram import (
     Client,
+    enums,
     filters
 )
-from pyrogram import enums
 from pyrogram.errors import (
     UserNotParticipant,
     FloodWait,
@@ -440,7 +440,7 @@ async def add_db_channel(c :Client, m: Message):
     except ValueError:
         await m.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_db_channel"))
@@ -460,7 +460,7 @@ async def delete_db_channel(c :Client, m: Message):
     except ValueError:
         await m.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("add_update_channel"))
@@ -477,7 +477,7 @@ async def add_update_channel(c :Client, m: Message):
     except ValueError:
         await m.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_update_channel"))
 async def delete_update_channel(c :Client, m: Message):
@@ -501,7 +501,7 @@ async def add_log_channel(c :Client, m: Message):
     except ValueError:
         await message.reply_text("don't send me text\nsend me only channel id in intiger like --- -1007725455")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_log_channel"))
@@ -574,7 +574,7 @@ async def change_verify_days(c :Client, m: Message):
     except ValueError:
         await m.reply_text("don't send me text\nsend me only  intiger like --- 6")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_verify_days"))
@@ -585,7 +585,7 @@ async def delete_verify_days(c :Client, m: Message):
         await db.delete_verify_days()
         await m.reply_text("**Successfully deleted verify_days**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_use_pre_shorted_link"))
@@ -617,7 +617,7 @@ async def change_verify_key_link_list(c :Client, m: Message):
         await db.change_verify_key_link(key_string,link_string)
         await m.reply_text("**Successfully change verify_key_list and verify_link_list**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_verify_key_link_list"))
 async def delete_verify_key_link_list(c :Client, m: Message):
@@ -627,7 +627,7 @@ async def delete_verify_key_link_list(c :Client, m: Message):
         await db.delete_verify_key_link()
         await m.reply_text("**Successfully deleted verify_key and verify_link list**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_shortner_api_link"))
@@ -643,7 +643,7 @@ async def change_shortner_api_link(c :Client, m: Message):
         await db.change_shortner_api_link(api_string,link_string)
         await m.reply_text("**Successfully change shortner_api and shortner_api_link**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_shortner_api_link"))
@@ -654,7 +654,7 @@ async def delete_shortner_api_link(c :Client, m: Message):
         await db.delete_shortner_api_link()
         await m.reply_text("**Successfully deleted shortner_api and shortner_api_link**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_video_photo_send"))
@@ -672,7 +672,7 @@ async def change_video_photo_send(c :Client, m: Message):
     except ValueError:
         await m.reply_text("don't send me text\nsend me only channel_id like --- -100646678")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_video_photo_send"))
 async def delete_video_photo_send(c :Client, m: Message):
@@ -682,7 +682,7 @@ async def delete_video_photo_send(c :Client, m: Message):
         await db.delete_video_photo_send()
         await m.reply_text("**Successfully deleted video_photo_send channel_id**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_add_details"))
@@ -698,7 +698,7 @@ async def change_add_details(c :Client, m: Message):
         await db.change_add_details(str(add_detail))
         await m.reply_text("**Successfully change add_detail data**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_add_details"))
@@ -709,7 +709,7 @@ async def delete_add_details(c :Client, m: Message):
         await db.delete_add_details()
         await m.reply_text("**Successfully deleted add_detail data**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_short_each_link"))
@@ -741,7 +741,7 @@ async def change_how_to_verify(c :Client, m: Message):
         await db.change_how_to_verify(str(add_detail))
         await m.reply_text("**Successfully change HOW_TO_VERIFY data**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_how_to_verify"))
 async def delete_how_to_verify(c :Client, m: Message):
@@ -751,7 +751,7 @@ async def delete_how_to_verify(c :Client, m: Message):
         await db.delete_how_to_verify()
         await m.reply_text("**Successfully deleted HOW_TO_VERIFY data**")
     except Exception as e:
-        await m.reply_text(f"somthing went wrong \nerror ---- {str(type(e))} ")
+        await m.reply_text(f"somthing went wrong \nerror ---- {e} ")
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_other_user_can_save_file"))
