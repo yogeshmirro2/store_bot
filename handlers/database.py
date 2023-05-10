@@ -13,11 +13,12 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.fcol = self.db.database_channel
-    def new_user(self, id):
+    async def new_user(self, id):
+        verify_key,verfy_link = await self.get_verify_key_link_list()
         return dict(
             id=id,
             join_date=datetime.date.today().isoformat(),
-            verify_key=secrets.choice(Config.VERIFY_KEY) if Config.VERIFY_KEY else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
+            verify_key=secrets.choice(verify_key) if len(verify_key) != 0 else ''.join(secrets.choice(string.ascii_letters + string.digits)for i in range(7)),
             verify_date=str(datetime.datetime.today()-datetime.timedelta(days=int(Config.VERIFY_DAYS))) if Config.VERIFY_DAYS else str(datetime.datetime.today()-datetime.timedelta(days=2)),
             ban_status=dict(
                 is_banned=False,
@@ -97,7 +98,7 @@ class Database:
 
 
     async def delete_update_channel_id(self):
-        check = await db.check_update_channel_id()
+        check = await self.check_update_channel_id()
         if check is not None:
             await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'UPDATES_CHANNEL': None}})
             return True
@@ -114,7 +115,7 @@ class Database:
         return status
 
     async def delete_log_channel_id(self):
-        checking = await db.check_log_channel_id()
+        checking = await self.check_log_channel_id()
         if checking is not None:
             await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'LOG_CHANNEL': None}})
             return True
@@ -260,7 +261,7 @@ class Database:
 
     async def update_verify_date(self,id):
         user = await self.col.find_one({'id': int(id)})
-        day = await db.get_verify_days()
+        day = await self.get_verify_days()
         await self.col.update_one({'id': id}, {'$set': {'verify_date': str(datetime.datetime.today()+datetime.timedelta(days=int(day)))}})
 
     async def check_verify_list_exist(self):
@@ -272,8 +273,8 @@ class Database:
 
     async def update_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
-        if await db.check_verify_list_exist():
-            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
+        if await self.check_verify_list_exist():
+            verify_key_list,verify_link_list = await self.get_verify_key_link_list()
             key = secrets.choice(verify_key_list)
             await self.col.update_one({'id': id}, {'$set': {'verify_key': key}})
         else:
@@ -285,16 +286,17 @@ class Database:
     async def get_verify_key(self,id):
         user = await self.col.find_one({'id': int(id)})
         key = user.get("verify_key")
-        if await db.check_verify_list_exist():
-            verify_key_list,verify_link_list = await db.get_verify_key_link_list()
+        if await self.check_verify_list_exist():
+            verify_key_list,verify_link_list = await self.get_verify_key_link_list()
             if key not in verify_key_list:
-                await db.update_verify_key(id)
+                await self.update_verify_key(id)
+                user = await self.col.find_one({'id': int(id)})
                 key = user.get("verify_key")
         return key
 
     
     async def add_user(self, id):
-        user = self.new_user(id)
+        user = await self.new_user(id)
         await self.col.insert_one(user)
 
     async def is_user_exist(self, id):
