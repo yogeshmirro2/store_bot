@@ -150,7 +150,7 @@ async def start(bot: Client, cmd: Message):
                         await edits.edit("**verification is enabled but could't find verify days\nplz report bot owner**")
                         return
                 except Exception as e:
-                    edits.edit(f"**there are some problem during verification\n Error --- {e}\n{str(type(e))}\nplease forward this error to bot owner") 
+                    await edits.edit(f"**there are some problem during verification\n Error --- {e}\n{str(type(e))}\nplease forward this error to bot owner") 
                     return
             if (check != "verify") and ("storedb" in check):
                 try:
