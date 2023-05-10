@@ -120,7 +120,7 @@ async def start(bot: Client, cmd: Message):
                         else:
                             await edits.edit("**This verification link is not for you🚫\nPlease wait... untill generating new verification link for you**")
                             await db.update_verify_key(cmd.from_user.id)
-                            usr_key = await db.get_verify_key()
+                            usr_key = await db.get_verify_key(cmd.from_user.id)
                             if await db.use_pre_shorted_link_status() and await db.check_verify_list_exist():
                                 verify_key_list,verify_link_list = await db.get_verify_key_link_list()
                                 how_verify = await db.get_how_to_verify()
