@@ -260,7 +260,7 @@ class Database:
 
     async def update_verify_date(self,id):
         user = await self.col.find_one({'id': int(id)})
-        day = await get_verify_days()
+        day = await db.get_verify_days()
         await self.col.update_one({'id': id}, {'$set': {'verify_date': str(datetime.datetime.today()+datetime.timedelta(days=int(day)))}})
 
     async def check_verify_list_exist(self):
