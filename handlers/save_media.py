@@ -48,13 +48,13 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
     try:
         media_thumb_id = ""
         message_ids_str = ""
-        media_captions =""
+        media_captions = []
         for message in (await bot.get_messages(chat_id=editable.chat.id, message_ids=message_ids)):
             sent_message = await forward_to_channel(DB_CHANNEL, log_channel, bot, message, editable)
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions+=f"**👉 {sent_message.caption}**\n\n" if sent_message.caption else f"**👉 **\n\n"
+                media_captions.append(f"**👉 {sent_message.caption}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
@@ -95,7 +95,6 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
                 thumb_path = await bot.download_media(media_thumb_id)
                 add_detail = await db.get_add_detail()
-                media_captions = media_captions.split("\n\n")
                 media_captions = sorted(media_captions)
                 media_captions = "\n\n".join(media_captions)
                 media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}" 
