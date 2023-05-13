@@ -46,7 +46,6 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
         await editable.edit(f"Something Went Wrong!\n\n**Error:** `{e}`")
         return
     try:
-        i = 1
         media_thumb_id = ""
         message_ids_str = ""
         media_captions =""
@@ -55,7 +54,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions+=f"**{i}👉 {sent_message.caption}**\n\n" if sent_message.caption else f"**{i}**\n"
+                media_captions+=f"**👉 {sent_message.caption}**\n\n" if sent_message.caption else f"**👉 **\n\n"
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
@@ -63,8 +62,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                     except Exception as e:
                         print(e)
                         pass
-            message_ids_str += f"{str(sent_message.id)} "
-            i+=1
+            message_ids_str += f"{str(sent_message.id)}"
             await asyncio.sleep(2)
         
         SaveMessage = await bot.send_message(
@@ -97,6 +95,9 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
                 thumb_path = await bot.download_media(media_thumb_id)
                 add_detail = await db.get_add_detail()
+                media_captions = media_captions.split("\n\n")
+                media_captions = sorted(media_captions)
+                media_captions = "\n\n".join(media_captions)
                 media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}" 
                 await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
                 await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
@@ -162,7 +163,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         if forwarded_msg.video and photo_send_channel is not None:
             await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-            media_captions+=f"**👉 {forwarded_msg.caption}**" if forwarded_msg.caption else ""
+            media_captions+=f"**👉 {forwarded_msg.caption}**" if forwarded_msg.caption else f"**👉 **"
             try:
                 add_detail = await db.get_add_detail()
                 thumb_id = forwarded_msg.video.thumbs[0].file_id
