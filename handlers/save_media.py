@@ -84,9 +84,8 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
         
         await bot.send_message(
             chat_id=int(DB_CHANNEL),
-            text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!",
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Open Link", url=share_link1)],[InlineKeyboardButton("without shorted Link", url=share_link1)]])
+            text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
+            disable_web_page_preview=True
         )
         
         if media_thumb_id and photo_send_channel is not None:
@@ -155,8 +154,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             share_link = share_link1
         
         await forwarded_msg.reply_text(
-            f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Open Link", url=share_link1)],[InlineKeyboardButton("without shorted Link", url=share_link1)]]),
+            f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
             disable_web_page_preview=True)
         
         
