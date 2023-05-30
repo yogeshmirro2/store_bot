@@ -202,6 +202,8 @@ async def start(bot: Client, cmd: Message):
                 except Exception as e:
                     await edits.edit(f"**Error during sending file \n error -- {e}")
                     return
+            else:
+                await edits.edit(f"**can't  indentify command that given by you plz report bot owner**")
         except Exception as e:
             await edits.edit(f"**Error while indentify your commnd.\nError ----- {e}\n{str(type(e))}\nplease forward this error to bot owner")
 
