@@ -125,7 +125,7 @@ class Database:
     async def change_other_user_can_save_file(self,bool_string):
         await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'OTHER_USERS_CAN_SAVE_FILE': eval(bool_string)}})
 
-    async def check_other_user_can_save_file():
+    async def check_other_user_can_save_file(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
         status = bot_dict.get("OTHER_USERS_CAN_SAVE_FILE")
         return status
