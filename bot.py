@@ -106,9 +106,11 @@ async def start(bot: Client, cmd: Message):
             if check == "verify":
                 try:
                     if await db.get_verify_days() is not None and  await db.check_verification_status():
-                        # if int(cmd.from_user.id) in Config.BOT_ADMINS:
-                        #     await cmd.reply_text("**you are admin of this bot.\nyou not need any verification**")
-                        #     return
+                        usr_verify_datetime_formate = await db.get_verify_date(cmd.from_user.id)
+                        usr_min = await get_diff_min(usr_verify_datetime_formate)
+                        if usr_min>=0:
+                            await edits.edit("**WTF!\nyou are already verified then why you try for verification again?**")
+                            return
                         await edits.edit("**Please Wait⚠️ Verifying You...**")
                         user_key = await db.get_verify_key(cmd.from_user.id)
                         day = await db.get_verify_days()
@@ -224,7 +226,7 @@ async def main(bot: Client, message: Message):
                                      disable_web_page_preview=True)
             return
 
-        if not Config.OTHER_USERS_CAN_SAVE_FILE and message.from_user.id not in Config.BOT_ADMINS:
+        if not await db.check_other_user_can_save_file() and message.from_user.id not in Config.BOT_ADMINS:
             return
 
         await message.reply_text(
@@ -237,6 +239,8 @@ async def main(bot: Client, message: Message):
             disable_web_page_preview=True
         )
     elif message.chat.type == enums.ChatType.CHANNEL:
+        if not await db.check_other_user_can_save_file():
+            return
         log_channel = await db.check_log_channel_id()
         updates_channel = await db.check_update_channel_id()
         each_short_link = await db.check_short_each_link()
