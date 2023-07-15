@@ -54,7 +54,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions.append(f"**👉 [📈{sent_message.document.file_size or sent_message.audio.file_size or sent_message.video.file_size}] {sent_message.caption}**" if sent_message.caption else f"**👉 **")
+                media_captions.append(f"**👉 {sent_message.caption}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
