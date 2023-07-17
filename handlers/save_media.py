@@ -11,6 +11,7 @@ from pyrogram.types import (
 from handlers.database import db
 from pyrogram.errors import FloodWait
 from handlers.helpers import str_to_b64
+from handlers.get_file_size import get_file_size
 from handlers.multi_channel import get_working_channel_string, get_working_db_channel_id
 from handlers.rm import rm_dir,rm_file
 
@@ -54,7 +55,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions.append(f"**👉 [{sent_message.document.file_size if sent_message.document else sent_message.audio.file_size if sent_message.audio else sent_message.video.file_size if sent_message.video else ''}] {sent_message.caption}**" if sent_message.caption else f"**👉 **")
+                media_captions.append(f"**👉 [{await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}] {sent_message.caption}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
