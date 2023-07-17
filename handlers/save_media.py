@@ -161,7 +161,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         if forwarded_msg.video and photo_send_channel is not None:
             await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-            media_captions+=f"**👉 {forwarded_msg.caption}**" if forwarded_msg.caption else f"**👉 **"
+            media_captions+=f"**👉 [{await get_file_size(forwarded_msg.video.file_size)}] {forwarded_msg.caption}**" if forwarded_msg.caption else f"**👉 **"
             try:
                 add_detail = await db.get_add_detail()
                 thumb_id = forwarded_msg.video.thumbs[0].file_id
