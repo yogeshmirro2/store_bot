@@ -55,7 +55,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions.append(f"**👉 [{await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}] {sent_message.caption}**" if sent_message.caption else f"**👉 **")
+                media_captions.append(f"**👉 {await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''} {sent_message.caption}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
                         if sent_message.video and sent_message.video.thumbs:
@@ -161,7 +161,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         if forwarded_msg.video and photo_send_channel is not None:
             await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-            media_captions+=f"**👉 [{await get_file_size(forwarded_msg.video.file_size)}] {forwarded_msg.caption}**" if forwarded_msg.caption else f"**👉 **"
+            media_captions+=f"**👉 {await get_file_size(forwarded_msg.video.file_size)} {forwarded_msg.caption}**" if forwarded_msg.caption else f"**👉 **"
             try:
                 add_detail = await db.get_add_detail()
                 thumb_id = forwarded_msg.video.thumbs[0].file_id
