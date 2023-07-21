@@ -143,6 +143,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         return
     try:
         media_captions = ""
+        thumb_id = ""
         forwarded_msg = await message.copy(DB_CHANNEL)
         file_er_id = str(forwarded_msg.id)
         share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start={Channel_string}_{str_to_b64(file_er_id)}"
@@ -163,7 +164,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             
             media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg.video.file_size if forwarded_msg.video else forwarded_msg.document.file_size if forwarded_msg.document else forwarded_msg.audio.file_size)}**" if forwarded_msg.caption else f"**👉 **"
             if forwarded_msg.video.thumbs[0].file_id or forwarded_msg.document.thumbs[0].file_id or forwarded_msg.audio.thumbs[0].file_id:
-                thumb_id = forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id if forwarded_msg.document else forwarded_msg.audio.thumbs[0].file_id
+                thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id if forwarded_msg.document else forwarded_msg.audio.thumbs[0].file_id}"
             if thumb_id and photo_send_channel is not None:
                 await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
                 try:
