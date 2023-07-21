@@ -58,8 +58,8 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
-                        if sent_message.video and sent_message.video.thumbs:
-                            media_thumb_id+=f"{sent_message.video.thumbs[0].file_id}"
+                        if (sent_message.video and sent_message.video.thumbs) or (sent_message.document and sent_message.document.thumbs[0].file_id):
+                            media_thumb_id+=f"{sent_message.video.thumbs[0].file_id if sent_message.video else sent_message.document.thumbs[0].file_id}"
                     except Exception as e:
                         print(e)
                         pass
@@ -159,12 +159,12 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             disable_web_page_preview=True)
         
         
-        if forwarded_msg.video and photo_send_channel is not None:
+        if (forwarded_msg.video or forwarded_msg.document.thumbs[0].file_id) and photo_send_channel is not None:
             await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
             media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg.video.file_size)}**" if forwarded_msg.caption else f"**👉 **"
             try:
                 add_detail = await db.get_add_detail()
-                thumb_id = forwarded_msg.video.thumbs[0].file_id
+                thumb_id = forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id
                 thumb_path = await bot.download_media(thumb_id)
                 media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}"
                 await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
