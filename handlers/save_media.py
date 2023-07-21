@@ -58,7 +58,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
-                        if (sent_message.video and sent_message.video.thumbs[0].file_id) or (sent_message.document and sent_message.document.thumbs[0].file_id) or (sent_message.audio and sent_message.audio.thumbs[0].file_id:
+                        if sent_message.video.thumbs[0].file_id or sent_message.document.thumbs[0].file_id or sent_message.audio.thumbs[0].file_id:
                             media_thumb_id+=f"{sent_message.video.thumbs[0].file_id if sent_message.video else sent_message.document.thumbs[0].file_id if sent_message.document else sent_message.audio.thumbs[0].file_id}"
                     except Exception as e:
                         print(e)
