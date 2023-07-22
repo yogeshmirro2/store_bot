@@ -8,12 +8,12 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from handlers.database import db
+from database import db
 from pyrogram.errors import FloodWait
-from handlers.helpers import str_to_b64
-from handlers.get_file_size import get_file_size
-from handlers.multi_channel import get_working_channel_string, get_working_db_channel_id
-from handlers.rm import rm_dir,rm_file
+from helpers import str_to_b64
+from get_file_size import get_file_size
+from multi_channel import get_working_channel_string, get_working_db_channel_id
+from rm import rm_dir,rm_file
 
 async def forward_to_channel(DB_CHANNEL, log_channel, bot: Client, message: Message, editable: Message):
     try:
@@ -55,11 +55,11 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             if sent_message is None:
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
-                media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}**" if sent_message.caption else f"**👉 **")
+                media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message)}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
-                        if sent_message.video.thumbs or sent_message.document.thumbs or sent_message.audio.thumbs:
-                            media_thumb_id+=f"{sent_message.video.thumbs[0].file_id if sent_message.video else sent_message.document.thumbs[0].file_id if sent_message.document else sent_message.audio.thumbs[0].file_id}"
+                        if sent_message.video:
+                            media_thumb_id+=f"{sent_message.video.thumbs[0].file_id}"
                     except Exception as e:
                         print(e)
                         pass
@@ -106,9 +106,12 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 await editable.edit(f"{e}")
                 await asyncio.sleep(4)
         
+        if type(media_captions) is list:
+            media_captions = sorted(media_captions)
+            media_captions = "\n\n".join(media_captions)
         
         await editable.edit(
-            f"**Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
+            f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton("Open Link", url=share_link)],[InlineKeyboardButton("without shorted Link", url=share_link1)]
                 ]
@@ -130,7 +133,6 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                     ]
                 )
             )
-
 
 async def save_media_in_channel(bot: Client, editable: Message, message: Message):
     try:
@@ -162,10 +164,13 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         
         if forwarded_msg.video or forwarded_msg.audio or forwarded_msg.document:
-    
-            media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg.video.file_size if forwarded_msg.video else forwarded_msg.document.file_size if forwarded_msg.document else forwarded_msg.audio.file_size)}**" if forwarded_msg.caption else f"**👉 **"
-            if forwarded_msg.video.thumbs or forwarded_msg.document.thumbs or forwarded_msg.audio.thumbs:
-                thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id if forwarded_msg.document else forwarded_msg.audio.thumbs[0].file_id}"
+            media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg)}**" if forwarded_msg.caption else f"**👉 **"
+            if forwarded_msg.video:
+                try:
+                    thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id}"
+                except Exception as e:
+                    print(e)
+                    pass
             if thumb_id and photo_send_channel is not None:
                 await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
                 try:
@@ -179,16 +184,18 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
                 except Exception as e:
                     await editable.edit("**can't find thumb id\nfor more error check logs**")
                     print(e)
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(2)
         
         
         await editable.edit(
-            f"**Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}**",
+            f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
             reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton("Open Link", url=share_link)],[InlineKeyboardButton("without shorted Link", url=share_link1)]]
+                [[InlineKeyboardButton("Open Link", url=share_link)],[InlineKeyboardButton("without shorted Link", url=share_link1)]
+                ]
             ),
             disable_web_page_preview=True
         )
+    
     except FloodWait as sl:
         if sl.value > 45:
             print(f"Sleep of {sl.value}s caused by FloodWait ...")
