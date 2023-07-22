@@ -8,12 +8,12 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from database import db
+from handlers.database import db
 from pyrogram.errors import FloodWait
-from helpers import str_to_b64
-from get_file_size import get_file_size
-from multi_channel import get_working_channel_string, get_working_db_channel_id
-from rm import rm_dir,rm_file
+from handlers.helpers import str_to_b64
+from handlers.get_file_size import get_file_size
+from handlers.multi_channel import get_working_channel_string, get_working_db_channel_id
+from handlers.rm import rm_dir,rm_file
 
 async def forward_to_channel(DB_CHANNEL, log_channel, bot: Client, message: Message, editable: Message):
     try:
