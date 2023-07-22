@@ -58,7 +58,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message.document.file_size) if sent_message.document else await get_file_size(sent_message.audio.file_size) if sent_message.audio else await get_file_size(sent_message.video.file_size) if sent_message.video else ''}**" if sent_message.caption else f"**👉 **")
                 if not media_thumb_id:
                     try:
-                        if sent_message.video.thumbs[0].file_id or sent_message.document.thumbs[0].file_id or sent_message.audio.thumbs[0].file_id:
+                        if sent_message.video.thumbs or sent_message.document.thumbs or sent_message.audio.thumbs:
                             media_thumb_id+=f"{sent_message.video.thumbs[0].file_id if sent_message.video else sent_message.document.thumbs[0].file_id if sent_message.document else sent_message.audio.thumbs[0].file_id}"
                     except Exception as e:
                         print(e)
@@ -105,6 +105,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             except Exception as e:
                 await editable.edit(f"{e}")
                 await asyncio.sleep(4)
+        
         
         await editable.edit(
             f"**Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
@@ -161,9 +162,9 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         
         if forwarded_msg.video or forwarded_msg.audio or forwarded_msg.document:
-            print(forwarded_msg.document)
+            print(forwarded_msg)
             media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg.video.file_size if forwarded_msg.video else forwarded_msg.document.file_size if forwarded_msg.document else forwarded_msg.audio.file_size)}**" if forwarded_msg.caption else f"**👉 **"
-            if (forwarded_msg.video.thumbs[0].file_id) or (forwarded_msg.document.thumbs[0].file_id) or (forwarded_msg.audio.thumbs[0].file_id):
+            if forwarded_msg.video.thumbs or forwarded_msg.document.thumbs or forwarded_msg.audio.thumbs:
                 thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id if forwarded_msg.document else forwarded_msg.audio.thumbs[0].file_id}"
             if thumb_id and photo_send_channel is not None:
                 await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
