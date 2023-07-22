@@ -161,7 +161,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         
         if forwarded_msg.video or forwarded_msg.audio or forwarded_msg.document:
-            print(forwarded_msg)
+            print(forwarded_msg.document)
             media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg.video.file_size if forwarded_msg.video else forwarded_msg.document.file_size if forwarded_msg.document else forwarded_msg.audio.file_size)}**" if forwarded_msg.caption else f"**👉 **"
             if (forwarded_msg.video.thumbs[0].file_id) or (forwarded_msg.document.thumbs[0].file_id) or (forwarded_msg.audio.thumbs[0].file_id):
                 thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id if forwarded_msg.video else forwarded_msg.document.thumbs[0].file_id if forwarded_msg.document else forwarded_msg.audio.thumbs[0].file_id}"
