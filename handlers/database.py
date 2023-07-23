@@ -38,8 +38,8 @@ class Database:
             BROADCAST_AS_COPY = Config.BROADCAST_AS_COPY,
             VERIFICATION = Config.VERIFICATION,
             VERIFY_DAYS = Config.VERIFY_DAYS,
-            THUMBNAIL = None
-            SET_DEFAULT_THUMB = False
+            THUMBNAIL = None,
+            SET_DEFAULT_THUMB = False,
             USE_PRESHORTED_LINK = Config.USE_PRESHORTED_LINK,
             VERIFY_KEY = Config.VERIFY_KEY,
             VERIFY_LINK = Config.VERIFY_LINK,
