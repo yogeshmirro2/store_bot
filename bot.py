@@ -421,6 +421,42 @@ async def clear_user_batch(bot: Client, m: Message):
     MediaList[f"{str(m.from_user.id)}"] = []
     await m.reply_text("Cleared your batch files successfully!")
 
+@Bot.on_message(filters.private & filters.user(Config,BOT_OWNER) & filters.command("set_thumbnail"))
+async def set_thumbnail(c:Client,m:Message):
+    if not m.from_user:
+        return await m.reply_text("I don't know about you sar :(")
+    if (not m.reply_to_message) or (not m.reply_to_message.photo):
+        return await m.reply_text("**reply any photo to add as default thumb.if you send any audio or  document then i will use this and send caption of audio or document files  with along default thumb to video_photo_send channel**")
+    await db.set_thumbnail( m.reply_to_message.photo.file_id)
+    await m.reply_text("Okay,\n"
+                       "I will use this image as custom thumbnail for audio and document file.")
+
+
+@Bot.on_message(filters.private & filters.user(Config,BOT_OWNER) & filters.command("delete_thumbnail"))
+async def set_thumbnail(c:Client,m:Message):
+    if not m.from_user:
+        return await m.reply_text("I don't know about you sar :(")
+    await db.set_thumbnail(None)
+    await m.reply_text("Okay,\n"
+                       "I deleted custom thumbnail from my database.")
+
+@Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_default_thumb_status"))
+async def change_default_thumb_status(c :Client, m: Message):
+    results = await db.get_default_thumb_status()
+    if results:
+        result = "False"
+    else:
+        result = "True"
+    btn=[[InlineKeyboardButton("click here", callback_data=f"change_default_thumb_stats_{result}")]]
+    await m.reply_text(
+        text=f"**your current status for default_thumb_status is --- {str(results)}\n click below to change status👇👇👇",
+        reply_markup=InlineKeyboardMarkup(btn),
+        quote=True,
+        disable_web_page_preview=True
+    )
+
+
+
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_db_channel"))
 async def change_db_channel(c :Client, m: Message):
     btn=[]
@@ -820,6 +856,13 @@ async def button(bot: Client, cmd: CallbackQuery):
         bool_string = cb_data.rsplit("_",1)[-1]
         await db.change_forward_as_copy(bool_string)
         await cmd.message.edit(f"**Now your forward_as_copy_status is {bool_string}**")
+
+
+    elif "change_default_thumb_stats" in cb_data:
+        bool_string = cb_data.rsplit("_",1)[-1]
+        await db.set_default_thumb(bool_string)
+        await cmd.message.edit(f"**Now your default_thumb_status is {bool_string}**")
+
 
 
     elif "db_channel" in cb_data:
