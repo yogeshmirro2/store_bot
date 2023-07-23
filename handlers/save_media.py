@@ -91,7 +91,8 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
         
         if not media_thumb_id and await db.get_default_thumb_status():
             media_thumb_id = await db.get_thumb_id()
-                
+                if media_thumb_id is None:
+                    await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
         
         if media_thumb_id and photo_send_channel is not None:
             try:
@@ -178,7 +179,9 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             
             if not thumb_id and await db.get_default_thumb_status():
                 thumb_id = await db.get_thumb_id()
-               
+                if thumb_id is None:
+                    await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
+        
             
             if thumb_id and photo_send_channel is not None:
                 await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
