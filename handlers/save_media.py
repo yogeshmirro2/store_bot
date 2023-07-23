@@ -8,12 +8,12 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from handlers.database import db
+from database import db
 from pyrogram.errors import FloodWait
-from handlers.helpers import str_to_b64
-from handlers.get_file_size import get_file_size
-from handlers.multi_channel import get_working_channel_string, get_working_db_channel_id
-from handlers.rm import rm_dir,rm_file
+from helpers import str_to_b64
+from get_file_size import get_file_size
+from multi_channel import get_working_channel_string, get_working_db_channel_id
+from rm import rm_dir,rm_file
 
 async def forward_to_channel(DB_CHANNEL, log_channel, bot: Client, message: Message, editable: Message):
     try:
@@ -88,6 +88,10 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
             text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
             disable_web_page_preview=True
         )
+        
+        if not media_thumb_id and await db.get_default_thumb_status():
+            media_thumb_id = await db.get_thumb_id()
+                
         
         if media_thumb_id and photo_send_channel is not None:
             try:
@@ -171,6 +175,11 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
                 except Exception as e:
                     print(e)
                     pass
+            
+            if not thumb_id and await db.get_default_thumb_status():
+                thumb_id = await db.get_thumb_id()
+               
+            
             if thumb_id and photo_send_channel is not None:
                 await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
                 try:
