@@ -44,7 +44,7 @@ from handlers.save_media import (
 )
 
 MediaList = {}
-BotCmdList = ["start","change_other_user_can_save_file","about","broadcast"
+BotCmdList = ["start","change_default_thumb_status","set_thumbnail","delete_thumbnail","change_other_user_can_save_file","about","broadcast"
 ,"status","ban_user","unban_user",
 "banned_users","clear_batch",
 "change_db_channel","add_db_channel","delete_db_channel",
