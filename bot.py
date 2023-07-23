@@ -421,7 +421,7 @@ async def clear_user_batch(bot: Client, m: Message):
     MediaList[f"{str(m.from_user.id)}"] = []
     await m.reply_text("Cleared your batch files successfully!")
 
-@Bot.on_message(filters.private & filters.user(Config,BOT_OWNER) & filters.command("set_thumbnail"))
+@Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("set_thumbnail"))
 async def set_thumbnail(c:Client,m:Message):
     if not m.from_user:
         return await m.reply_text("I don't know about you sar :(")
@@ -432,7 +432,7 @@ async def set_thumbnail(c:Client,m:Message):
                        "I will use this image as custom thumbnail for audio and document file.")
 
 
-@Bot.on_message(filters.private & filters.user(Config,BOT_OWNER) & filters.command("delete_thumbnail"))
+@Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_thumbnail"))
 async def set_thumbnail(c:Client,m:Message):
     if not m.from_user:
         return await m.reply_text("I don't know about you sar :(")
