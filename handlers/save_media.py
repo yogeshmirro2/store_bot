@@ -8,7 +8,7 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
-from hanlers.database import db
+from handlers.database import db
 from pyrogram.errors import FloodWait
 from handlers.helpers import str_to_b64
 from handlers.get_file_size import get_file_size
