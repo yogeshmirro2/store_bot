@@ -38,6 +38,8 @@ class Database:
             BROADCAST_AS_COPY = Config.BROADCAST_AS_COPY,
             VERIFICATION = Config.VERIFICATION,
             VERIFY_DAYS = Config.VERIFY_DAYS,
+            THUMBNAIL = None
+            SET_DEFAULT_THUMB = False
             USE_PRESHORTED_LINK = Config.USE_PRESHORTED_LINK,
             VERIFY_KEY = Config.VERIFY_KEY,
             VERIFY_LINK = Config.VERIFY_LINK,
@@ -68,6 +70,23 @@ class Database:
         return True if bot_dict else False
 
 
+    async def set_thumbnail(self, thumbnail):
+        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
+        await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"}, {'$set': {'THUMBNAIL': thumbnail}})
+    
+    async def get_thumb_id(self):
+        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
+        thumb_id = bot_dict.get("THUMBNAIL")
+        return thumb_id
+
+    async def set_default_thumb(self,bool_string):
+        await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'SET_DEFAULT_THUMB': eval(bool_string)}})
+
+    async def get_default_thumb_status(self):
+        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
+        status = bot_dict.get("SET_DEFAULT_THUMB")
+        return status
+    
     async def get_current_db_channel_id(self):
         bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
         return bot_dict.get("CURRENT_DB_CHANNEL")
