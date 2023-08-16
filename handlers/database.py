@@ -13,6 +13,7 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.fcol = self.db.database_channel
+        self.mcol = self.db.media_database
     async def new_user(self, id):
         verify_key,verfy_link = await self.get_verify_key_link_list()
         return dict(
@@ -34,7 +35,7 @@ class Database:
             TOTAL_DB_CHANNEL_LIST = Config.DB_CHANNELS,
             UPDATES_CHANNEL = Config.UPDATES_CHANNEL,
             LOG_CHANNEL = Config.LOG_CHANNEL,
-            FORWARD_AS_COPY = Config.FORWARD_AS_COPY,
+            #FORWARD_AS_COPY = Config.FORWARD_AS_COPY,
             BROADCAST_AS_COPY = Config.BROADCAST_AS_COPY,
             VERIFICATION = Config.VERIFICATION,
             VERIFY_DAYS = Config.VERIFY_DAYS,
@@ -150,13 +151,13 @@ class Database:
         return status
 
 
-    async def change_forward_as_copy(self,bool_string):
-        await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'FORWARD_AS_COPY': eval(bool_string)}})
+    # async def change_forward_as_copy(self,bool_string):
+    #     await self.fcol.update_one({"BOT_DB":"BOT_SETTINGS"},{'$set': {'FORWARD_AS_COPY': eval(bool_string)}})
 
-    async def check_forward_as_copy_status(self):
-        bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
-        status = bot_dict.get("FORWARD_AS_COPY")
-        return status
+    # async def check_forward_as_copy_status(self):
+    #     bot_dict = await self.fcol.find_one({"BOT_DB":"BOT_SETTINGS"})
+    #     status = bot_dict.get("FORWARD_AS_COPY")
+    #     return status
 
 
     async def change_broadcast_as_copy(self,bool_string):
