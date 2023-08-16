@@ -136,13 +136,11 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 await editable.edit(f"{e}")
                 return
                 #await asyncio.sleep(4)
+    
+        if type(media_captions) is list:
+            media_captions = sorted(media_captions)
+            media_captions = "\n\n".join(media_captions)
         
-        try:
-        
-            if type(media_captions) is list:
-                media_captions = sorted(media_captions)
-                media_captions = "\n\n".join(media_captions)
-            
         
         await editable.edit(
             f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\n{media_captions}",
@@ -181,12 +179,12 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
     try:
         media_captions = ""
         thumb_id = ""
-        forwarded_msg = await message.copy(int(DB_CHANNEL}))
+        forwarded_msg = await message.copy(int(DB_CHANNEL))
         file_er_id = str(forwarded_msg.id)
         
         try:
             SaveMessage = await bot.send_message(
-                chat_id=DB_CHANNEL,
+                chat_id=int(DB_CHANNEL),
                 text=f"#SiNGle_LInk|{file_er_id}",
                 disable_web_page_preview=True
             )
