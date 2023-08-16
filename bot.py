@@ -899,7 +899,7 @@ async def delete_how_to_verify(c :Client, m: Message):
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_other_user_can_save_file"))
 async def change_other_user_can_save_file(c :Client, m: Message):
-    results = await db.change_other_user_can_save_file()
+    results = await db.check_other_user_can_save_file()
     if results:
         result = "False"
     else:
