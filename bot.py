@@ -1,6 +1,7 @@
 # (c) @AbirHasan2005
 
 import os
+import datetime
 import secrets
 import string
 import asyncio
@@ -26,7 +27,7 @@ from pyrogram.types import (
 )
 from configs import Config
 from handlers.get_verify_min import get_diff_min
-from handlers.multi_channel import get_db_channel_id,get_working_channel_string
+#from handlers.multi_channel import get_db_channel_id,get_working_channel_string
 from handlers.linkshort import get_shortlink
 from handlers.database import db
 from handlers.add_user_to_db import add_user_to_database
@@ -44,7 +45,7 @@ from handlers.save_media import (
 )
 
 MediaList = {}
-BotCmdList = ["start","change_default_thumb_status","set_thumbnail","delete_thumbnail","change_other_user_can_save_file","about","broadcast"
+BotCmdList = ["start","add_media_to_database","change_default_thumb_status","set_thumbnail","delete_thumbnail","change_other_user_can_save_file","about","broadcast"
 ,"status","ban_user","unban_user",
 "banned_users","clear_batch",
 "change_db_channel","add_db_channel","delete_db_channel",
@@ -61,6 +62,21 @@ Bot = Client(
     api_id=Config.API_ID,
     api_hash=Config.API_HASH
 )
+
+
+class AsyncIter:    
+    def __init__(self, items):    
+        self.items = items    
+
+    async def __aiter__(self):    
+        for item in self.items:    
+            yield item  
+
+    async def __anext__(self):
+        try:
+            return next(self.iter)
+        except StopIteration as e:
+            raise StopAsyncIteration from e
 
 
 @Bot.on_message(filters.private)
@@ -98,8 +114,8 @@ async def start(bot: Client, cmd: Message):
             )
         )
     else:
-        key = cmd.text.split("_",1)[-1]
-        check = (cmd.text.split("_",1)[0]).split()[-1]
+        key = cmd.text.rsplit("_",1)[-1]
+        check = (cmd.text.rsplit("_",1)[0]).split()[-1]
         edits = await cmd.reply_text("**Please Wait...Checking Command Given by You**")
         
         try:
@@ -154,9 +170,10 @@ async def start(bot: Client, cmd: Message):
                 except Exception as e:
                     await edits.edit(f"**there are some problem during verification\n Error --- {e}\n{str(type(e))}\nplease forward this error to bot owner") 
                     return
-            if (check != "verify") and ("storedb" in check):
+            if (check != "verify") and ("store" in check):
                 try:
-                    db_channel = await get_db_channel_id(check)
+                    #db_channel = await get_db_channel_id(check)
+                    db_channel = int('-100'+f'{check.split("_")[-1]}')
                     if int(cmd.from_user.id) in Config.BOT_ADMINS:
                         await edits.delete()
                         await process_files(bot ,cmd ,db_channel)
@@ -205,9 +222,9 @@ async def start(bot: Client, cmd: Message):
                     await edits.edit(f"**Error during sending file \n error -- {e}")
                     return
             else:
-                await edits.edit(f"**can't  indentify command that given by you plz report bot owner**")
+                await edits.edit(f"**can't  indentify command that given by you plz report bot owner🤗🤗🤗🤗**")
         except Exception as e:
-            await edits.edit(f"**Error while indentify your commnd.\nError ----- {e}\n{str(type(e))}\nplease forward this error to bot owner")
+            await edits.edit(f"**Error while indentify your commnd.\nError ----- {e}\n{str(type(e))}\nplease forward this error to bot owner🤗🤗🤗🤗🤗")
 
 @Bot.on_message(filters.incoming & ~filters.command(BotCmdList))
 async def main(bot: Client, message: Message):
@@ -248,7 +265,7 @@ async def main(bot: Client, message: Message):
         if updates_channel is None:
             updates_channel = 673889
         db_channel = await db.get_current_db_channel_id()
-        db_channel_string = await get_working_channel_string()
+        db_channel_string = str(db_channel).replace('-100','')
         if (message.chat.id == int(log_channel)) or (message.chat.id in total_db_channel_list) or (message.chat.id == int(updates_channel)) or message.forward_from_chat or message.forward_from:
             return
         elif int(message.chat.id) in Config.BANNED_CHAT_IDS:
@@ -260,7 +277,7 @@ async def main(bot: Client, message: Message):
         try:
             forwarded_msg = await message.copy(db_channel)
             file_er_id = str(forwarded_msg.id)
-            share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start={db_channel_string}_{str_to_b64(file_er_id)}"
+            share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start=store_{db_channel_string}_{str_to_b64(file_er_id)}"
             if each_short_link:
                 share_link = await get_shortlink(share_link)
                 if not share_link:
@@ -431,7 +448,86 @@ async def set_thumbnail(c:Client,m:Message):
     await m.reply_text("Okay,\n"
                        "I will use this image as custom thumbnail for audio and document file.")
 
-
+@Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("add_media_to_database"))
+async def add_media_to_database(c:Client,m:Message):
+    if not m.from_user:
+        return await m.reply_text("I don't know about you sar :(")
+    if not m.reply_to_message:
+        return await m.reply_text("**reply text in this formate to add media in database --- channel_id(-10038484)|from_msg_id(67)|till_msg_id(100)**")
+    try:
+        from_channel = int(m.reply_to_message.text.split("|")[0])
+        from_msg_id = int(m.reply_to_message.text.split("|")[1])
+        till_msg_id = int(m.reply_to_message.text.split("|")[2])
+    except ValueError:
+        return await m.reply_text("don't send me text\nsend me only intigers like --- -1007725455|574|849")
+    except IndexError:
+        return await m.reply_text("send me text in this formate : -10084748|46|885")
+    except Exception as e:
+        await m.reply_text(f"Error : {e}")
+    
+    try:
+        start_time = datetime.datetime.now()
+        Total = 0
+        video = 0
+        document = 0
+        no_media_msg = 0
+        failed_msg_id = ''
+        total_messages = (range(1,till_msg_id))
+        txt = await m.reply_text(text="adding media to database has started !")
+        try:
+            for i in range(from_msg_id-1 ,len(total_messages), 200):
+                try:
+                    channel_posts = AsyncIter(await c.get_messages(from_channel, total_messages[i:i+200]))
+                except FloodWait as e:
+                    await asyncio.sleep(e.value)
+                    channel_posts = AsyncIter(await c.get_messages(from_channel, total_messages[i:i+200]))
+                
+                async for message in channel_posts:
+                    if message.video:
+                        try:
+                            file_name = message.video.file_name
+                            file_caption = message.caption if message.caption else "None"
+                            file_id = message.video.file_id
+                            key = str_to_b64(message.video.file_unique_id)
+                            await db.Save_File(file_name,file_caption,file_id,key)
+                            Total+=1
+                            video+=1
+                        except Exception as e:
+                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
+                            failed_msg_id+=str(message.id)
+        
+                    elif message.document:
+                        try:
+                            file_name = message.document.file_name
+                            file_caption = message.caption if message.caption else 'None'
+                            file_id = message.document.file_id
+                            key = str_to_b64(message.document.file_unique_id)
+                            await db.Save_File(file_name,file_caption,file_id,key)
+                            Total+=1
+                            document+=1
+                        except Exception as e:
+                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
+                            failed_msg_id+=str(message.id)
+                    else:
+                        no_media_msg+=1
+        
+                    if Total % 10 == 0:
+                        msg = f"adding media to database in process !\n\nTotal: {Total}\nVideo: {video}\nDocument: {document}\nFailed_Msg_Id: {failed_msg_id}\nNo_Media_Msg: `{no_media_msg}`"
+                        await txt.edit(msg)
+        
+        except Exception as e:
+            return await m.reply_text(f"Error occurred : `{e}`")
+    except Exception as e:
+            return await m.reply_text(f"Error during adding media to DB : `{e}`")
+    finally:
+        end_time = datetime.datetime.now()
+        await asyncio.sleep(4)
+        t = end_time - start_time
+        time_taken = str(datetime.timedelta(seconds=t.seconds))
+        msg = f"Add Media to Databse has Completed!\n\nTime Taken - `{time_taken}`\n\nTotal: `{Total}`\nVideo: `{video}`\nDocument: `{document}`\nFailed_Msg_Id: `{failed_msg_id}`\nNo_Media_Msg: `{no_media_msg}`"
+        await txt.edit(msg)
+        
+        
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("delete_thumbnail"))
 async def set_thumbnail(c:Client,m:Message):
     if not m.from_user:
@@ -477,7 +573,7 @@ async def add_db_channel(c :Client, m: Message):
     if not m.from_user:
         return await m.reply_text("I don't know about you sar :(")
     if not m.reply_to_message:
-        return await m.reply_text("**reply any channel id to add in DB_CHANNEL list**")
+        return await m.reply_text("**reply any channel id (like -10064677) to add in DB_CHANNEL list**")
         
     try:
         channel_id = int(m.reply_to_message.text)
@@ -560,20 +656,20 @@ async def delete_log_channel(c :Client, m: Message):
         return await m.reply_text("**there are no LOG_CHANNEL**")
 
 
-@Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_forward_as_copy"))
-async def change_forward_as_copy(c :Client, m: Message):
-    results = await db.check_forward_as_copy_status()
-    if results:
-        result = "False"
-    else:
-        result = "True"
-    btn=[[InlineKeyboardButton("click here", callback_data=f"forward_as_copy_{result}")]]
-    await m.reply_text(
-        text=f"**your current status for forward_as_copy_status is --- {str(results)}\n click below to change status👇👇👇",
-        reply_markup=InlineKeyboardMarkup(btn),
-        quote=True,
-        disable_web_page_preview=True
-    )
+# @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_forward_as_copy"))
+# async def change_forward_as_copy(c :Client, m: Message):
+#     results = await db.check_forward_as_copy_status()
+#     if results:
+#         result = "False"
+#     else:
+#         result = "True"
+#     btn=[[InlineKeyboardButton("click here", callback_data=f"forward_as_copy_{result}")]]
+#     await m.reply_text(
+#         text=f"**your current status for forward_as_copy_status is --- {str(results)}\n click below to change status👇👇👇",
+#         reply_markup=InlineKeyboardMarkup(btn),
+#         quote=True,
+#         disable_web_page_preview=True
+#     )
 
 
 @Bot.on_message(filters.private & filters.user(Config.BOT_OWNER) & filters.command("change_broadcast_as_copy"))
@@ -852,10 +948,10 @@ async def button(bot: Client, cmd: CallbackQuery):
         await cmd.message.edit(f"**Now your verification is {bool_string}**")
 
     
-    elif "forward_as_copy" in cb_data:
-        bool_string = cb_data.rsplit("_",1)[-1]
-        await db.change_forward_as_copy(bool_string)
-        await cmd.message.edit(f"**Now your forward_as_copy_status is {bool_string}**")
+    # elif "forward_as_copy" in cb_data:
+    #     bool_string = cb_data.rsplit("_",1)[-1]
+    #     await db.change_forward_as_copy(bool_string)
+    #     await cmd.message.edit(f"**Now your forward_as_copy_status is {bool_string}**")
 
 
     elif "change_default_thumb_stats" in cb_data:
@@ -1019,7 +1115,10 @@ async def button(bot: Client, cmd: CallbackQuery):
 
     elif "closeMessage" in cb_data:
         await cmd.message.delete(True)
-
+    
+    
+    
+    
     try:
         await cmd.answer()
     except QueryIdInvalid: pass
