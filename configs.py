@@ -18,7 +18,7 @@ class Config(object):
     OTHER_USERS_CAN_SAVE_FILE = os.environ.get("OTHER_USERS_CAN_SAVE_FILE",False)
     DATABASE_URL = os.environ.get("DATABASE_URL","")
     BANNED_USERS = set(int(x) for x in os.environ.get("BANNED_USERS", "1234567890").split())
-    FORWARD_AS_COPY = os.environ.get("FORWARD_AS_COPY", True)
+    #FORWARD_AS_COPY = os.environ.get("FORWARD_AS_COPY", True)
     BROADCAST_AS_COPY = os.environ.get("BROADCAST_AS_COPY", False)
     BANNED_CHAT_IDS = list(set(int(x) for x in os.environ.get("BANNED_CHAT_IDS", "-100136269 -100195497").split()))
     VERIFY_KEY = os.environ.get("VERIFY_KEY","").split()#multiple VERIFY_KEY separated by space.if VERIFICATION and USE_PRESHORTED_LINK is True then VERIFY_LINK and VERIFY_KEY must be fill.which VERIFY_LINK & VERIFY_KEY related to each other must be same index in both VERIFY_LINK and VERIFY_KEY var like --- "hhjdjdj" this key is ralated to https://www.shorted_link.com then if "hhjdjdj" key is at index 1 then https://www.shorted_link.com must also be at index 1 
