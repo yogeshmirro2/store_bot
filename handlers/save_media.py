@@ -137,8 +137,6 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 return
                 #await asyncio.sleep(4)
         
-        try:
-        
         if type(media_captions) is list:
             media_captions = sorted(media_captions)
             media_captions = "\n\n".join(media_captions)
