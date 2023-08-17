@@ -22,7 +22,7 @@ async def process_files(bot: Client, cmd: Message, db_id):
             if "BaTCh_LInK" in GetMessage.text:
                 message_ids = GetMessage.text.split("|")[1].split()
             else:
-                message_ids = GetMessage.text.split("|")[1]
+                message_ids.append(int(GetMessage.text.split("|")[1]))
             _response_msg = await cmd.reply_text(
                 text=f"**Total Files:** `{len(message_ids)}`",
                 quote=True,
