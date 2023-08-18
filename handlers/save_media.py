@@ -100,14 +100,14 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
         
             await bot.send_message(
                 chat_id=int(DB_CHANNEL),
-                text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
+                text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link}\n\nwithout shorted Link - {share_link1}",
                 disable_web_page_preview=True
             )
         except FloodWait as e:
             await asyncio.sleep(e.value)
             await bot.send_message(
                 chat_id=int(DB_CHANNEL),
-                text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
+                text=f"#BATCH_SAVE:\n\n[{editable.reply_to_message.from_user.first_name}](tg://user?id={editable.reply_to_message.from_user.id}) Got Batch Link!\n\nOpen Link - {share_link}\n\nwithout shorted Link - {share_link1}",
                 disable_web_page_preview=True
             )
             
@@ -216,12 +216,12 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
         
         try:
             await forwarded_msg.reply_text(
-                f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
+                f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!\n\nOpen Link - {share_link}\n\nwithout shorted Link - {share_link1}",
                 disable_web_page_preview=True)
         except FloodWait as e:
             await asyncio.sleep(e.value)
             await forwarded_msg.reply_text(
-                f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!\n\nOpen Link - {share_link1}\n\nwithout shorted Link - {share_link1}",
+                f"#PRIVATE_FILE:\n\n[{message.from_user.first_name}](tg://user?id={message.from_user.id}) Got File Link!\n\nOpen Link - {share_link}\n\nwithout shorted Link - {share_link1}",
                 disable_web_page_preview=True)
             
         if forwarded_msg.video or forwarded_msg.audio or forwarded_msg.document:
