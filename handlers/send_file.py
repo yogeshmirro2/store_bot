@@ -18,7 +18,7 @@ async def process_files(bot: Client, cmd: Message, db_id):
             file_id = int(cmd.text.rsplit("_",1)[-1])
         GetMessage = await bot.get_messages(chat_id=int(db_id), message_ids=file_id)
         message_ids = []
-        if GetMessage.text and ("BaTCh_LInK" or "SiNGle_LInk") in GetMessage.text:
+        if GetMessage.text and ("BaTCh_LInK") or ("SiNGle_LInk") in GetMessage.text:
             message_ids = GetMessage.text.split("|")[1].split()
             _response_msg = await cmd.reply_text(
                 text=f"**Total Files:** `{len(message_ids)}`",
