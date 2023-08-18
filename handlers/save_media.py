@@ -201,11 +201,11 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             await asyncio.sleep(e.value)
             SaveMessage = await bot.send_message(
                 chat_id=int(DB_CHANNEL),
-                text=f"#SiNGle_LInk|{file_er_id}",
+                text=f"#SiNGle_LInk|{SaveMessage.id}",
                 disable_web_page_preview=True
             )
         
-        share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start=store_{Channel_string}_{str_to_b64(file_er_id)}"
+        share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start=store_{Channel_string}_{str_to_b64(SaveMessage.id)}"
         if each_short_link:
             share_link = await get_shortlink(share_link)
             if not share_link:
