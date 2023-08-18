@@ -205,7 +205,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
                 disable_web_page_preview=True
             )
         
-        share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start=store_{Channel_string}_{str_to_b64(SaveMessage.id)}"
+        share_link1 = f"https://t.me/{Config.BOT_USERNAME}?start=store_{Channel_string}_{str_to_b64(str(SaveMessage.id))}"
         if each_short_link:
             share_link = await get_shortlink(share_link)
             if not share_link:
