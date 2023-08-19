@@ -64,7 +64,7 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                         print(e)
                         pass
             message_ids_str += f"{str(sent_message.id)} "
-            await asyncio.sleep(2)
+            #await asyncio.sleep(2)
         try:
             SaveMessage = await bot.send_message(
                 chat_id=int(DB_CHANNEL),
