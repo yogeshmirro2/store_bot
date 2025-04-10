@@ -493,8 +493,9 @@ async def add_media_to_database(c:Client,m:Message):
                             Total+=1
                             video+=1
                         except Exception as e:
-                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
                             failed_msg_id+=str(message.id)
+                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
+                            
         
                     elif message.document:
                         try:
@@ -506,8 +507,9 @@ async def add_media_to_database(c:Client,m:Message):
                             Total+=1
                             document+=1
                         except Exception as e:
-                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
                             failed_msg_id+=str(message.id)
+                            return await m.reply_text(f"Error while adding media to database message_id --{message.id} \nError: {e}")
+                            
                     else:
                         no_media_msg+=1
         
@@ -1108,10 +1110,14 @@ async def button(bot: Client, cmd: CallbackQuery):
         if message_ids is None:
             await cmd.answer("Batch List Empty!", show_alert=True)
             return
-        await cmd.message.edit("Please wait, generating batch link ...")
-        message_ids = sorted(message_ids)
-        await save_batch_media_in_channel(bot=bot, editable=cmd.message, message_ids=message_ids)
-        MediaList[f"{str(cmd.from_user.id)}"] = []
+        if len(message_ids)==1:
+            message=await bot.get_messages(chat_id=cmd.from_user.id, message_ids=message_ids[0])
+            await save_media_in_channel(bot, editable=cmd.message, message=message)
+        else:
+            await cmd.message.edit("Please wait, generating batch link ...")
+            message_ids = sorted(message_ids)
+            await save_batch_media_in_channel(bot=bot, editable=cmd.message, message_ids=message_ids)
+            MediaList[f"{str(cmd.from_user.id)}"] = []
 
     elif "closeMessage" in cb_data:
         await cmd.message.delete(True)
