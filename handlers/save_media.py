@@ -58,13 +58,13 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 continue
             if sent_message.video or sent_message.audio or sent_message.document:
                 media_captions.append(f"**👉  {sent_message.caption} {await get_file_size(sent_message)}**" if sent_message.caption else f"**👉 **")
-                if not media_thumb_id:
-                    try:
-                        if sent_message.video:
-                            media_thumb_id+=f"{sent_message.video.thumbs[0].file_id}"
-                    except Exception as e:
-                        print(e)
-                        pass
+                # if not media_thumb_id:
+                #     try:
+                #         if sent_message.video:
+                #             media_thumb_id+=f"{sent_message.video.thumbs[0].file_id}"
+                #     except Exception as e:
+                #         print(e)
+                #         pass
             message_ids_str += f"{str(sent_message.id)} "
             #await asyncio.sleep(2)
         try:
@@ -113,30 +113,30 @@ async def save_batch_media_in_channel(bot: Client, editable: Message, message_id
                 disable_web_page_preview=True
             )
             
-        if not media_thumb_id and await db.get_default_thumb_status():
-            media_thumb_id = await db.get_thumb_id()
-            if media_thumb_id is None:
-                await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
+        # if not media_thumb_id and await db.get_default_thumb_status():
+        #     media_thumb_id = await db.get_thumb_id()
+        #     if media_thumb_id is None:
+        #         await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
         
-        if media_thumb_id and photo_send_channel is not None:
-            try:
-                await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-                #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
-                thumb_path = await bot.download_media(media_thumb_id)
-                add_detail = await db.get_add_detail()
-                media_captions = sorted(media_captions)
-                media_captions = "\n\n".join(media_captions)
-                media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}"
-                if len(media_captions1)>1024:
-                    await editable.edit("**media caption is too long (more than 1024 character)\nAdding only 1024 character caption to your media photo...**")
-                    media_captions1 = media_captions1[0:1020]
-                await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
-                await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
-                await rm_dir()
-                await asyncio.sleep(2)
-            except Exception as e:
-                await editable.edit(f"{e}")
-                return
+        # if media_thumb_id and photo_send_channel is not None:
+        #     try:
+        #         await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
+        #         #thumb_path = await bot.download_media(media_thumb_id,f"{Config.DOWNLOAD_DIR}/{media_thumb_id}")
+        #         thumb_path = await bot.download_media(media_thumb_id)
+        #         add_detail = await db.get_add_detail()
+        #         media_captions = sorted(media_captions)
+        #         media_captions = "\n\n".join(media_captions)
+        #         media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}"
+        #         if len(media_captions1)>1024:
+        #             await editable.edit("**media caption is too long (more than 1024 character)\nAdding only 1024 character caption to your media photo...**")
+        #             media_captions1 = media_captions1[0:1020]
+        #         await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
+        #         await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
+        #         await rm_dir()
+        #         await asyncio.sleep(2)
+        #     except Exception as e:
+        #         await editable.edit(f"{e}")
+        #         return
                 #await asyncio.sleep(4)
     
         if type(media_captions) is list:
@@ -228,36 +228,36 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             
         if forwarded_msg.video or forwarded_msg.audio or forwarded_msg.document:
             media_captions+=f"**👉 {forwarded_msg.caption} {await get_file_size(forwarded_msg)}**" if forwarded_msg.caption else f"**👉 **"
-            if forwarded_msg.video:
-                try:
-                    thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id}"
-                except Exception as e:
-                    print(e)
-                    pass
+            # if forwarded_msg.video:
+            #     try:
+            #         thumb_id+=f"{forwarded_msg.video.thumbs[0].file_id}"
+            #     except Exception as e:
+            #         print(e)
+            #         pass
             
-            if not thumb_id and await db.get_default_thumb_status():
-                thumb_id = await db.get_thumb_id()
-                if thumb_id is None:
-                    await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
+            # if not thumb_id and await db.get_default_thumb_status():
+            #     thumb_id = await db.get_thumb_id()
+            #     if thumb_id is None:
+            #         await editable.reply_text("**set_default_thumb is enable but there is not thubmnail set by you.\nplz set a thumbnail first to get all media caption with thumbnail in photo_send_channel**")
         
             
-            if thumb_id and photo_send_channel is not None:
-                await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
-                try:
-                    add_detail = await db.get_add_detail()
-                    thumb_path = await bot.download_media(thumb_id)
-                    media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}"
-                    if len(media_captions1)>1024:
-                        await editable.edit("**media caption is too long (more than 1024 character)\nAdding only 1024 character caption to your media photo...**")
-                        media_captions1 = media_captions1[0:1020]
-                    await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
-                    await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
-                    await rm_dir()
-                    await asyncio.sleep(2)
-                except Exception as e:
-                    await editable.edit(f"{e}")
-                    print(e)
-                    return
+            # if thumb_id and photo_send_channel is not None:
+            #     await editable.edit("**sending thumbnail with all Content caption to your VIDEO_PHOTO_SEND channel**")
+            #     try:
+            #         add_detail = await db.get_add_detail()
+            #         thumb_path = await bot.download_media(thumb_id)
+            #         media_captions1=f"Here is the Permanent Link of your Content: <a href={share_link}>Download Link</a>\n\nJust Click on download to get your Content!\n\nyour Content name are:👇\n\n{media_captions}\n\n{add_detail}"
+            #         if len(media_captions1)>1024:
+            #             await editable.edit("**media caption is too long (more than 1024 character)\nAdding only 1024 character caption to your media photo...**")
+            #             media_captions1 = media_captions1[0:1020]
+            #         await bot.send_photo(int(photo_send_channel),thumb_path,media_captions1)
+            #         await editable.edit("**thumbnail with media_captions has been sent to your VIDEO_PHOTO_SEND channel**")
+            #         await rm_dir()
+            #         await asyncio.sleep(2)
+            #     except Exception as e:
+            #         await editable.edit(f"{e}")
+            #         print(e)
+            #         return
         
         
         await editable.edit(
